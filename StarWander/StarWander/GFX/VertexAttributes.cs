@@ -86,13 +86,13 @@ namespace StarWander.GFX
         /// <param name="normalized">Normalized?</param>
         /// <param name="stride">The stride of the data</param>
         /// <param name="offset">The offset of the data</param>
-        /// <param name="vertexBuffer"></param>
-        public void SetVertexAttributeLayout<T>(int layoutNum, string name, AttributeType type, bool normalized, int stride, int offset, Buffer<T> vertexBuffer)
-            where T : unmanaged
+        /// <param name="srcVertexBuffer">The buffer to pull vertex data from</param>
+        public void SetVertexAttributeLayout<T>(int layoutNum, string name, AttributeType type, bool normalized, int stride, int offset, Buffer<T> srcVertexBuffer)
+            where T : struct
         {
             this.Assert();
 
-            vertexBuffer.Bind(BufferTarget.ArrayBuffer);
+            srcVertexBuffer.Bind(BufferTarget.ArrayBuffer);
             VertexAttributeNames[layoutNum] = name;
             var glAttribType = type.ToVertexAttribPointerType(out var size);
             GL.VertexAttribPointer(layoutNum, size, glAttribType, normalized, stride, offset);

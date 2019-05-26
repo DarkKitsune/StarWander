@@ -361,10 +361,11 @@ namespace StarWander.GFX
         /// <param name="location">The uniform location</param>
         /// <param name="value"></param>
         /// <returns>Uniform location</returns>
-        public void Uniform(int location, ref OpenTK.Matrix4 value)
+        public void Uniform(int location, ref Matrix4<float> value)
         {
             Bind();
-            GL.UniformMatrix4(location, false, ref value);
+            var tk = value.ToTKMatrix();
+            GL.UniformMatrix4(location, false, ref tk);
         }
 
         /// <summary>
@@ -501,7 +502,7 @@ namespace StarWander.GFX
         /// </summary>
         /// <param name="name">The uniform name</param>
         /// <param name="value"></param>
-        public void Uniform(string name, OpenTK.Matrix3 value)
+        public void Uniform(string name, ref OpenTK.Matrix3 value)
         {
             Bind();
             GL.UniformMatrix3(GetUniformLocation(name), false, ref value);
@@ -511,10 +512,11 @@ namespace StarWander.GFX
         /// </summary>
         /// <param name="name">The uniform name</param>
         /// <param name="value"></param>
-        public void Uniform(string name, OpenTK.Matrix4 value)
+        public void Uniform(string name, ref Matrix4<float> value)
         {
             Bind();
-            GL.UniformMatrix4(GetUniformLocation(name), false, ref value);
+            var tk = value.ToTKMatrix();
+            GL.UniformMatrix4(GetUniformLocation(name), false, ref tk);
         }
 
         /// <summary>
@@ -616,10 +618,10 @@ namespace StarWander.GFX
         /// Set the model matrix
         /// </summary>
         /// <param name="mat"></param>
-        public void SetModelMatrix(OpenTK.Matrix4 mat)
+        public void SetModelMatrix(ref Matrix4<float> mat)
         {
             AssertHasFeatures(Shader.ShaderFeatures.ModelMatrix);
-            Uniform("uniform_modelMatrix", mat);
+            Uniform("uniform_modelMatrix", ref mat);
         }
 
         /// <summary>
@@ -637,9 +639,9 @@ namespace StarWander.GFX
             }
             if (HasFeatures(Shader.ShaderFeatures.ModelMatrix))
             {
-                var mat = OpenTK.Matrix4.CreateScale(scale.X, scale.Y, scale.Y) *
-                    OpenTK.Matrix4.CreateTranslation(position.X, position.Y, position.Z);
-                Uniform("uniform_modelMatrix", mat);
+                var mat = Matrix4<float>.CreateScale(scale) *
+                    Matrix4<float>.CreateTranslation(position);
+                Uniform("uniform_modelMatrix", ref mat);
                 return;
             }
             throw new InvalidOperationException(

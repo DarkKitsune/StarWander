@@ -134,11 +134,11 @@ namespace StarWander.Panels
             spriteRenderer.MagFilter = TextureMagFilter.Nearest;
             spriteRenderer.MinFilter = TextureMinFilter.Nearest;
 
-            var mat = Matrix4.CreateScale(Size.X, Size.Y, 0f)
-                * Matrix4.CreateTranslation(Center.X, Center.Y, 0f);
+            var mat = Matrix4<float>.CreateScale(new Vector3<float>(Size.To<float>(), 0f))
+                * Matrix4<float>.CreateTranslation(new Vector3<float>(Center.To<float>(), 0f));
             spriteRenderer.DrawSprite(
                     DefaultSprite,
-                    mat,
+                    ref mat,
                     VulpineLib.Util.Color.White,
                     BlendType.AlphaPremultiplied
                 );

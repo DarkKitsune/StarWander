@@ -42,7 +42,7 @@ namespace StarWander.GFX
         /// <summary>
         /// Construct a GraphicInstruction
         /// </summary>
-        public static GraphicInstruction SetSprite(double time, Sprite? sprite)
+        public static GraphicInstruction SetSprite(double time, Sprite sprite)
         {
             return new GraphicInstruction(time, InstructionCode.SetSprite, sprite);
         }

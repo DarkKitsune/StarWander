@@ -10,7 +10,7 @@ namespace StarWander.GameObjects.Actors
             
         }
 
-        protected override void OnDamage(GameObject attacker, double amount)
+        protected override void OnDamage(GameObject? attacker, double amount)
         {
             Log.Info($"Attacked by {attacker} for {amount} damage", nameof(Ship));
         }

@@ -9,7 +9,7 @@ namespace StarWander.GFX
     /// A GL buffer
     /// </summary>
     public class Buffer<T> : IGLObject
-        where T : unmanaged
+        where T : struct
     {
         public bool Disposed { get; private set; }
 
@@ -163,12 +163,12 @@ namespace StarWander.GFX
         /// Map the buffer to program memory for writing/reading
         /// </summary>
         /// <param name="bufferAccess"></param>
-        public unsafe T* Map(BufferAccess bufferAccess)
+        public unsafe IntPtr Map(BufferAccess bufferAccess)
         {
             this.Assert();
 
             Bind(BufferTarget.ArrayBuffer);
-            return (T*)GL.MapBuffer(BufferTarget.ArrayBuffer, bufferAccess);
+            return GL.MapBuffer(BufferTarget.ArrayBuffer, bufferAccess);
         }
 
         /// <summary>
@@ -177,12 +177,12 @@ namespace StarWander.GFX
         /// <param name="bufferAccess"></param>
         /// <param name="start">Element to start at</param>
         /// <param name="count"></param>
-        public unsafe T* Map(BufferAccessMask bufferAccess, long start, long count)
+        public unsafe IntPtr Map(BufferAccessMask bufferAccess, long start, long count)
         {
             this.Assert();
 
             Bind(BufferTarget.ArrayBuffer);
-            return (T*)GL.MapBufferRange(
+            return GL.MapBufferRange(
                     BufferTarget.ArrayBuffer,
                     (IntPtr)(start * TypeInfo<T>.TypeSize),
                     (IntPtr)(count * TypeInfo<T>.TypeSize),

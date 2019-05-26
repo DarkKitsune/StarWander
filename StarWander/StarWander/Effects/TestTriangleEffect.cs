@@ -55,7 +55,7 @@ namespace StarWander.Effects
             State.CheckError();
             unsafe
             {
-                var ptr = TriangleVertexBuffer.Map(BufferAccess.WriteOnly);
+                var ptr = (Vector3f*)TriangleVertexBuffer.Map(BufferAccess.WriteOnly);
                 State.CheckError();
                 ptr[0] = new Vector3f(-1f, 1f, 0f);
                 ptr[1] = new Vector3f(1f, 1f, 0f);

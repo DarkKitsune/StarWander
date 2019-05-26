@@ -84,7 +84,7 @@ namespace StarWander.GFX
         /// <param name="blendType"></param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="NullReferenceException"></exception>
-        public void DrawSprite(Sprite sprite, Matrix4 transform, VulpineLib.Util.Color color, BlendType blendType)
+        public void DrawSprite(Sprite sprite, ref Matrix4<float> transform, VulpineLib.Util.Color color, BlendType blendType)
         {
             Assert();
 
@@ -113,7 +113,7 @@ namespace StarWander.GFX
             // Set the model color
             sprite.ShaderProgram.SetModelColor(color);
             // Set the model matrix
-            sprite.ShaderProgram.SetModelMatrix(transform);
+            sprite.ShaderProgram.SetModelMatrix(ref transform);
             // Draw 4 vertices
             GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
             State.CheckError();

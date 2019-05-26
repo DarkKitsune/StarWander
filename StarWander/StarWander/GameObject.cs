@@ -19,6 +19,7 @@ namespace StarWander
         public GameObject(Vector3<float> position)
         {
             Transform = new Transform(this, position);
+            BoundingBox = new BoundingBox(this, Vector3<float>.Zero);
         }
 
         public override string ToString()

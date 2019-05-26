@@ -84,6 +84,8 @@ namespace StarWander.GFX
             CheckError();
 
             SpriteSets.Init();
+
+            GPUMesh.Init();
         }
 
         private static DebugProc DebugProc = new DebugProc(DebugCallback);
@@ -249,7 +251,7 @@ namespace StarWander.GFX
             };
             unsafe
             {
-                var ptr = FogUniformBuffer.Map(BufferAccess.WriteOnly);
+                var ptr = (UniformBlockFog*)FogUniformBuffer.Map(BufferAccess.WriteOnly);
                 ptr[0] = fog;
                 FogUniformBuffer.Unmap();
             }

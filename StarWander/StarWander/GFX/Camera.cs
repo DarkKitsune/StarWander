@@ -72,7 +72,7 @@ namespace StarWander.GFX
         {
             var cam = new UniformBlockCamera
             {
-                View = view.ToTKMatrix() * Matrix4.CreateScale(1f, -1f, 1f),
+                View = view.ToTKMatrix(),
                 Projection = projection.ToTKMatrix()
             };
             CameraStack.Pop();
@@ -81,7 +81,7 @@ namespace StarWander.GFX
             OrthoBoundsStack.Push(default);
             unsafe
             {
-                var ptr = CameraUniformBuffer.Map(BufferAccess.WriteOnly);
+                var ptr = (UniformBlockCamera*)CameraUniformBuffer.Map(BufferAccess.WriteOnly);
                 ptr[0] = cam;
                 CameraUniformBuffer.Unmap();
             }
@@ -96,7 +96,7 @@ namespace StarWander.GFX
         {
 
             Set(
-                    Matrix4<float>.CreateTranslation(new Vector3<float>(-bounds.Center, 0f)),
+                    Matrix4<float>.CreateTranslation(new Vector3<float>(-bounds.Center, 0f)) * Matrix4<float>.CreateScale(new Vector3<float>(1f, -1f, 1f)),
                     Matrix4<float>.CreateOrthographic(bounds.Size, -1f, 1f)
                 );
             OrthoBoundsStack.Pop();
@@ -144,7 +144,7 @@ namespace StarWander.GFX
             OrthoBoundsStack.Pop();
             unsafe
             {
-                var ptr = CameraUniformBuffer.Map(BufferAccess.WriteOnly);
+                var ptr = (UniformBlockCamera*)CameraUniformBuffer.Map(BufferAccess.WriteOnly);
                 ptr[0] = CameraStack.Peek();
                 CameraUniformBuffer.Unmap();
             }
