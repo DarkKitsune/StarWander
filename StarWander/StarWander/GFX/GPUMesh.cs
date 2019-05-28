@@ -8,41 +8,14 @@ namespace StarWander.GFX
 {
     internal static class GPUMesh
     {
-        private static ShaderProgram? _defaultShaderProgram;
-
         /// <summary>
         /// The default mesh shader program
         /// </summary>
-        public static ShaderProgram DefaultShaderProgram
-        {
-            get
-            {
-                if (_defaultShaderProgram == null)
-                    throw new NullReferenceException();
-                return _defaultShaderProgram;
-            }
-            private set { _defaultShaderProgram = value; }
-        }
-
-        public static void Init()
-        {
-            // Create default shader program
-            DefaultShaderProgram = ShaderProgram.Create($"{nameof(GPUMesh)}.{nameof(DefaultShaderProgram)}");
-            using (var vert = Content.LoadShader(Path.Combine("shaders", "mesh.vert"), ShaderType.Vertex))
-            {
-                using (var frag = Content.LoadShader(Path.Combine("shaders", "mesh.frag"), ShaderType.Fragment))
-                {
-                    DefaultShaderProgram.AttachShaders(vert, frag);
-                    DefaultShaderProgram.Link();
-                    DefaultShaderProgram.DetachShaders(vert, frag);
-                }
-            }
-            DefaultShaderProgram.EnableBlockCamera();
-        }
+        public static ShaderProgram DefaultShaderProgram => ShaderProgramSets.Meshes["BasicLit"];
     }
 
     internal class GPUMesh<T> : INameable, IDisposable
-        where T : struct, IVertex
+        where T : struct, IVertex<Vector3<float>>
     {
         public bool Disposed { get; private set; }
 
@@ -172,7 +145,7 @@ namespace StarWander.GFX
             {
                 var field = fields[i];
                 var size = sizes[i];
-                var stride = fullSize - size;
+                var stride = fullSize;
                 AttributeType attrType;
                 if (field.FieldType == typeof(Vector3<float>))
                     attrType = AttributeType.Vector3;

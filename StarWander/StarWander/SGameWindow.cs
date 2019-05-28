@@ -138,6 +138,8 @@ namespace StarWander
 
             // Update input
             Input.Mouse.Update();
+            //Input.Keyboard.Update();
+            Input.GamePad.Update();
 
             // Update the scene
             SceneManager.Update(time, delta);

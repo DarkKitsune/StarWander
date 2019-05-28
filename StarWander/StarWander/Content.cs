@@ -37,6 +37,29 @@ namespace StarWander
             return shader;
         }
 
+        public static ShaderProgram LoadShaderProgramVF(string vertexPath, string fragmentPath)
+        {
+            var shaderProgram = ShaderProgram.Create($"{nameof(ShaderProgram)}({Path.GetFileName(vertexPath)}+{Path.GetFileName(fragmentPath)})");
+            using (var vert = LoadShader(vertexPath, ShaderType.Vertex))
+            {
+                using (var frag = LoadShader(fragmentPath, ShaderType.Fragment))
+                {
+                    shaderProgram.AttachShaders(vert, frag);
+                    shaderProgram.Link();
+                    shaderProgram.DetachShaders(vert, frag);
+                }
+            }
+            if (shaderProgram.HasFeatures(Shader.ShaderFeatures.Camera))
+                shaderProgram.EnableBlockCamera();
+            if (shaderProgram.HasFeatures(Shader.ShaderFeatures.Fog))
+                shaderProgram.EnableFog();
+            if (shaderProgram.HasFeatures(Shader.ShaderFeatures.DiffuseTexture))
+                shaderProgram.EnableDiffuseTexture();
+            if (shaderProgram.HasFeatures(Shader.ShaderFeatures.NormalTexture))
+                shaderProgram.EnableNormalTexture();
+            return shaderProgram;
+        }
+
         /// <summary>
         /// Load a texture
         /// </summary>

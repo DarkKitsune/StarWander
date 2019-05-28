@@ -83,9 +83,8 @@ namespace StarWander.GFX
             Camera.Init();
             CheckError();
 
+            ShaderProgramSets.Init();
             SpriteSets.Init();
-
-            GPUMesh.Init();
         }
 
         private static DebugProc DebugProc = new DebugProc(DebugCallback);

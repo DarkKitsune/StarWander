@@ -8,7 +8,7 @@ using VulpineLib.Util;
 namespace StarWander.GFX
 {
     internal class MeshRenderer<T> : Renderer
-        where T : struct, IVertex
+        where T : struct, IVertex<Vector3<float>>
     {
         /*
         public TextureMinFilter MinFilter
