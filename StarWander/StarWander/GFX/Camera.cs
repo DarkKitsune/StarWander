@@ -15,7 +15,7 @@ namespace StarWander.GFX
         /// <summary>
         /// Struct for the "block_camera" uniform block
         /// </summary>
-        [StructLayout(LayoutKind.Explicit, Size = 128)]
+        [StructLayout(LayoutKind.Explicit, Size = 128 + 16)]
         private struct UniformBlockCamera
         {
             [FieldOffset(0)]
@@ -23,6 +23,10 @@ namespace StarWander.GFX
 
             [FieldOffset(64)]
             public Matrix4 View;
+
+
+            [FieldOffset(128)]
+            public Vector3f EyePosition;
         }
 
         private static Stack<UniformBlockCamera> CameraStack = new Stack<UniformBlockCamera>();
@@ -60,7 +64,7 @@ namespace StarWander.GFX
             CameraUniformBuffer.BindAtUniformBlockBindingPoint(ReservedBindingPoints.Camera);
             CameraStack.Push(default);
             OrthoBoundsStack.Push(default);
-            Set(Matrix4<float>.Identity, Matrix4<float>.Identity);
+            Set(Matrix4<float>.Identity, Matrix4<float>.Identity, default);
         }
 
         /// <summary>
@@ -68,12 +72,13 @@ namespace StarWander.GFX
         /// </summary>
         /// <param name="view"></param>
         /// <param name="projection"></param>
-        public static void Set(Matrix4<float> view, Matrix4<float> projection)
+        public static void Set(Matrix4<float> view, Matrix4<float> projection, Vector3<float> eyePos)
         {
             var cam = new UniformBlockCamera
             {
                 View = view.ToTKMatrix(),
-                Projection = projection.ToTKMatrix()
+                Projection = projection.ToTKMatrix(),
+                EyePosition = eyePos.ToVector3f()
             };
             CameraStack.Pop();
             CameraStack.Push(cam);
@@ -88,6 +93,53 @@ namespace StarWander.GFX
         }
 
         /// <summary>
+        /// Set the camera view & projection
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="projection"></param>
+        private static void Set(Matrix4 view, Matrix4 projection, Vector3<float> eyePos)
+        {
+            var cam = new UniformBlockCamera
+            {
+                View = view,
+                Projection = projection,
+                EyePosition = eyePos.ToVector3f()
+            };
+            CameraStack.Pop();
+            CameraStack.Push(cam);
+            OrthoBoundsStack.Pop();
+            OrthoBoundsStack.Push(default);
+            unsafe
+            {
+                var ptr = (UniformBlockCamera*)CameraUniformBuffer.Map(BufferAccess.WriteOnly);
+                ptr[0] = cam;
+                CameraUniformBuffer.Unmap();
+            }
+        }
+
+        /// <summary>
+        /// Set the camera to a projection camera
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="size"></param>
+        public static void SetProjection(
+                Vector3<float> from, Vector3<float> to, float FOV, float aspectRatio,
+                Vector3<float> up, float near, float far
+            )
+        {
+
+            Set(
+                    Matrix4.LookAt(
+                            from.X, from.Y, from.Z,
+                            to.X, to.Y, to.Z,
+                            up.X, up.Y, up.Z
+                        ),
+                    Matrix4.CreatePerspectiveFieldOfView(FOV, aspectRatio, near, far),
+                    from
+                );
+        }
+
+        /// <summary>
         /// Set the camera to an orthographic camera
         /// </summary>
         /// <param name="center"></param>
@@ -97,7 +149,8 @@ namespace StarWander.GFX
 
             Set(
                     Matrix4<float>.CreateTranslation(new Vector3<float>(-bounds.Center, 0f)) * Matrix4<float>.CreateScale(new Vector3<float>(1f, -1f, 1f)),
-                    Matrix4<float>.CreateOrthographic(bounds.Size, -1f, 1f)
+                    Matrix4<float>.CreateOrthographic(bounds.Size, -1f, 1f),
+                    new Vector3<float>(bounds.Center, 1f)
                 );
             OrthoBoundsStack.Pop();
             OrthoBoundsStack.Push(bounds);
@@ -113,7 +166,8 @@ namespace StarWander.GFX
             
             Set(
                     Matrix4<float>.CreateTranslation(new Vector3<float>(-center, 0f)),
-                    Matrix4<float>.CreateOrthographic(size, -1f, 1f)
+                    Matrix4<float>.CreateOrthographic(size, -1f, 1f),
+                    new Vector3<float>(center, 1f)
                 );
             OrthoBoundsStack.Pop();
             OrthoBoundsStack.Push(new VulpineLib.Geometry.Rectangle(center - size / 2f, center + size / 2f));

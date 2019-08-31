@@ -23,17 +23,17 @@ namespace StarWander.Components
         /// <summary>
         /// Minimum corner of the bounding box in world coordinates
         /// </summary>
-        public Vector3<float> Min => Parent.Transform.Position + MinLocal;
+        public Vector3<decimal> Min => Parent.Transform.Position + MinLocal.To<decimal>();
 
         /// <summary>
         /// Maximum corner of the bounding box in world coordinates
         /// </summary>
-        public Vector3<float> Max => Parent.Transform.Position + MaxLocal;
+        public Vector3<decimal> Max => Parent.Transform.Position + MaxLocal.To<decimal>();
 
         /// <summary>
         /// Center of the bounding box in world coordinates
         /// </summary>
-        public Vector3<float> Center => Parent.Transform.Position + CenterLocal;
+        public Vector3<decimal> Center => Parent.Transform.Position + CenterLocal.To<decimal>();
 
         public BoundingBox(GameObject parent, Vector3<float> size) : base(parent)
         {

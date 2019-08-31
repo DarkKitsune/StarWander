@@ -35,7 +35,7 @@ namespace StarWander.Input
             {
                 if (SGameWindow.Main == null)
                     throw new NullReferenceException();
-                var localPoint = SGameWindow.Main.PointToClient(new OpenTK.Point(MouseState.X, MouseState.Y));
+                var localPoint = SGameWindow.Main.PointToClient(new System.Drawing.Point(MouseState.X, MouseState.Y));
                 return new Vector2<int>(localPoint.X, localPoint.Y);
             }
         }
@@ -46,7 +46,7 @@ namespace StarWander.Input
             {
                 if (SGameWindow.Main == null)
                     throw new NullReferenceException();
-                var localPoint = SGameWindow.Main.PointToClient(new OpenTK.Point(MouseState.X, MouseState.Y));
+                var localPoint = SGameWindow.Main.PointToClient(new System.Drawing.Point(MouseState.X, MouseState.Y));
                 return new Vector2<float>(
                         localPoint.X / (float)SGameWindow.Main.ClientSize.Width,
                         localPoint.Y / (float)SGameWindow.Main.ClientSize.Height

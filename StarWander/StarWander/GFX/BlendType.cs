@@ -12,6 +12,14 @@ namespace StarWander.GFX
                 BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha,
                 BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd
             );
+        /// <summary>
+        /// Alpha blend mode for premultiplied-alpha textures
+        /// </summary>
+        public static BlendType Alpha = new BlendType(
+                BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha,
+                BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha,
+                BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd
+            );
 
         /// <summary>
         /// Source RGB factor

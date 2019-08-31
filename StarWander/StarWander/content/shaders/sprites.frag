@@ -10,4 +10,8 @@ out vec4 out_fColor;
 void main()
 {
 	out_fColor = modelColor(diffuse(varying_vTexCoord));
+	if (out_fColor.a < 0.0001)
+	{
+		discard;
+	}
 }

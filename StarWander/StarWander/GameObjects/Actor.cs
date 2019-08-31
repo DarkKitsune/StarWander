@@ -7,6 +7,11 @@ namespace StarWander.GameObjects
     public class Actor : GameObject
     {
         /// <summary>
+        /// The actor's collision hull
+        /// </summary>
+        public CollisionHull CollisionHull { get; }
+
+        /// <summary>
         /// The actor's health pool
         /// </summary>
         public HealthPool HealthPool { get; }
@@ -16,8 +21,9 @@ namespace StarWander.GameObjects
         /// </summary>
         public GameObject? LastDamagedBy { get; private set; }
 
-        public Actor(Vector3<float> position, double health) : base(position)
+        public Actor(Region region, Vector3<decimal> position, Team team, double health) : base(region, position)
         {
+            CollisionHull = new CollisionHull(this, team);
             HealthPool = new HealthPool(this, health);
             HealthPool.Depleted += Kill;
         }

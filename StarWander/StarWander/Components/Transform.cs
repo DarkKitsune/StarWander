@@ -7,15 +7,26 @@ namespace StarWander.Components
     {
         private Matrix4<float> _matrix = Matrix4<float>.Identity;
         private Quaternion<float> _rotation = Quaternion<float>.Identity;
-        private Vector3<float> _position;
+        private Vector3<decimal> _position;
+        private Vector3<float> _scale = Vector3<float>.One;
         private bool NeedsUpdate;
 
         public Quaternion<float> Rotation
         {
             get => _rotation;
-            private set
+            set
             {
                 _rotation = value;
+                FlagForMatrixUpdate();
+            }
+        }
+
+        public Vector3<float> Scale
+        {
+            get => _scale;
+            set
+            {
+                _scale = value;
                 FlagForMatrixUpdate();
             }
         }
@@ -25,11 +36,30 @@ namespace StarWander.Components
         public Vector3<float> ForwardLocal => Vector3<float>.UnitX;
         public Vector3<float> RightLocal => -Vector3<float>.UnitY;
         public Vector3<float> UpLocal => Vector3<float>.UnitZ;
+        public float PitchUpFromRight => 1;
+        public float PitchDownFromRight => -1;
+        public float YawLeftFromUp => 1;
+        public float YawRightFromUp => -1;
+        public float RollRightFromForward => 1;
+        public float RollLeftFromForward => -1;
 
         /// <summary>
-        /// Position of the object
+        /// Position of the object in worldspace
         /// </summary>
-        public Vector3<float> Position
+        public Vector3<decimal> Position
+        {
+            get => Parent.Region.Center + _position.To<decimal>();
+            set
+            {
+                _position = value - Parent.Region.Center;
+                FlagForMatrixUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Position of the object relative to its region
+        /// </summary>
+        public Vector3<decimal> PositionInRegion
         {
             get => _position;
             set
@@ -110,10 +140,16 @@ namespace StarWander.Components
         /// </summary>
         private Matrix4<float> BuildMatrix()
         {
-            return RotationMatrix.Transform(Matrix4<float>.CreateTranslation(Position));
+            return Matrix4<float>.CreateScale(Scale)
+                .Transform(
+                    RotationMatrix
+                )
+                .Transform(
+                    Matrix4<float>.CreateTranslation(PositionInRegion.To<float>())
+                );
         }
 
-        public Transform(GameObject parent, Vector3<float> position) : base(parent)
+        public Transform(GameObject parent, Vector3<decimal> position) : base(parent)
         {
             Position = position;
         }
@@ -156,11 +192,75 @@ namespace StarWander.Components
         }
 
         /// <summary>
+        /// Pitch the transform up locally
+        /// </summary>
+        /// <param name="radians"></param>
+        public void PitchUp(double radians)
+        {
+            Rotate(Right, radians * PitchUpFromRight);
+        }
+
+        /// <summary>
+        /// Pitch the transform down locally
+        /// </summary>
+        /// <param name="radians"></param>
+        public void PitchDown(double radians)
+        {
+            Rotate(Right, radians * PitchDownFromRight);
+        }
+
+        /// <summary>
+        /// Rotate the transform's yaw rightwards (clockwise from above) locally
+        /// </summary>
+        /// <param name="radians"></param>
+        public void YawRight(double radians)
+        {
+            Rotate(Up, radians * YawRightFromUp);
+        }
+
+        /// <summary>
+        /// Rotate the transform's yaw leftwards (counter-clockwise from above) locally
+        /// </summary>
+        /// <param name="radians"></param>
+        public void YawLeft(double radians)
+        {
+            Rotate(Up, radians * YawLeftFromUp);
+        }
+
+        /// <summary>
+        /// Roll the transform rightwards (clockwise from behind) locally
+        /// </summary>
+        /// <param name="radians"></param>
+        public void RollRight(double radians)
+        {
+            Rotate(Forward, radians * RollRightFromForward);
+        }
+
+        /// <summary>
+        /// Roll the transform leftwards (counter-clockwise from behind) locally
+        /// </summary>
+        /// <param name="radians"></param>
+        public void RollLeft(double radians)
+        {
+            Rotate(Forward, radians * RollLeftFromForward);
+        }
+
+        /// <summary>
         /// Reset the rotation of the transform
         /// </summary>
         public void ResetRotation()
         {
             Rotation = Quaternion<float>.Identity;
+        }
+
+        /// <summary>
+        /// Get the position relative to a given region
+        /// </summary>
+        /// <param name="region"></param>
+        /// <returns></returns>
+        public Vector3<decimal> GetPositionInRegion(Region region)
+        {
+            return Position - region.Center;
         }
     }
 }

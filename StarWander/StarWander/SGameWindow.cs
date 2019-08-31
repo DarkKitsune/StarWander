@@ -111,13 +111,15 @@ namespace StarWander
 
             Panels.Panel.Init();
 
+            GameObjects.Actors.SpriteActor.Init();
+
 #if DEBUG
             /*if (Mode == GameWindowMode.WorldEditor)
-                SceneManager.StartScene(new EditorScene());
+                SceneManager.StartScene(new EditorScene(), time);
             else*/
                 SceneManager.StartScene(new GameScene(), time);
 #else
-            SceneManager.StartScene(new GameScene());
+            SceneManager.StartScene(new GameScene(), time);
 #endif
         }
 

@@ -1,5 +1,6 @@
 #version 400
 #feature(Camera)
+#feature(TextureSource)
 #feature(ModelMatrix)
 
 // In / Out
@@ -7,6 +8,7 @@ in vec3 in_vPos;
 in vec3 in_vNorm;
 in vec2 in_vTexCoord;
 out vec3 varying_vNorm;
+out vec2 varying_vTexCoord;
 
 // Entry point
 void main()
@@ -18,4 +20,5 @@ void main()
 	// Vertex normal
 	mat3 normalMatrix = transpose(inverse(mat3(model())));
 	varying_vNorm = normalize(normalMatrix * in_vNorm);
+	varying_vTexCoord = textureSourceCoords(in_vTexCoord);
 }

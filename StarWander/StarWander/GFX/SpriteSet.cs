@@ -3,6 +3,8 @@ using System.IO;
 using System.Drawing;
 using System.Collections.Generic;
 using VulpineLib.Util;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace StarWander.GFX
 {
@@ -67,7 +69,7 @@ namespace StarWander.GFX
             }
 
             // Create an atlas of the bitmaps
-            var atlas = TextureAtlas.CreateBitmapAtlas(bitmaps, 2, out var regions, bufferSpriteEdges);
+            var atlas = TextureAtlas.CreateBitmapAtlas(bitmaps, 1, out var regions, bufferSpriteEdges);
             // Dispose the bitmaps
             foreach (var bitmap in bitmaps)
                 bitmap.Dispose();
@@ -95,7 +97,18 @@ namespace StarWander.GFX
             for (var i = 0; i < pngs.Length; i++)
             {
                 var spriteName = Path.GetFileNameWithoutExtension(pngs[i]);
-                spriteSet.SetSprite(spriteName, program, regions[i]);
+                var sprite = spriteSet.SetSprite(spriteName, program, regions[i]);
+                var jsonFile = Path.ChangeExtension(pngs[i], "json");
+                if (File.Exists(jsonFile))
+                {
+
+                    var json = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(jsonFile));
+                    if (json.TryGetValue("origin", out var origin_obj))
+                    {
+                        var origin = (JArray)origin_obj;
+                        sprite.Origin = new Vector2<float>((float)origin[0], (float)origin[1]);
+                    }
+                }
             }
 
             // Return the new SpriteSet

@@ -77,7 +77,7 @@ namespace StarWander.GFX
             ReservedBindingPoints.Init();
             CheckError();
 
-            GL.ClearColor(0.5f, 0.6f, 0.7f, 0.0f);
+            GL.ClearColor(0f, 0f, 0f, 0f);
             CheckError();
 
             Camera.Init();

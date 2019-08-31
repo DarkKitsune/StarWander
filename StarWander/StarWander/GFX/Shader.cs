@@ -168,8 +168,13 @@ namespace StarWander.GFX
                                         "{" +
                                             "mat4 uniform_projection;" +
                                             "mat4 uniform_view;" +
+                                            "vec3 uniform_eyePosition;" +
                                         "};" +
                                         // functions
+                                        "vec3 eye()" +
+                                        "{" +
+                                            "return uniform_eyePosition;" +
+                                        "}" +
                                         "mat4 view()" +
                                         "{" +
                                             "return uniform_view;" +

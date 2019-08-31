@@ -106,6 +106,7 @@ namespace StarWander.GFX
             {
                 sprite.ShaderProgram.Bind();
                 sprite.ShaderProgram.SetTextureSource(sprite.TopLeftCoord, sprite.SizeCoord);
+                sprite.ShaderProgram.Uniform("uniform_origin", sprite.Origin);
                 LastSprite = sprite;
             }
             // Bind the BlendType

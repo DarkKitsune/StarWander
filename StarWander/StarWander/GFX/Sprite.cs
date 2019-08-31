@@ -26,6 +26,10 @@ namespace StarWander.GFX
         /// Size of the sprite in the SpriteSet's texture, in texture coordinates
         /// </summary>
         public Vector2<float> SizeCoord { get; private set; }
+        /// <summary>
+        /// Origin of the sprite (0,0 - 1,1)
+        /// </summary>
+        public Vector2<float> Origin { get; set; } = new Vector2<float>(0.5f, 0.5f);
 
         /// <summary>
         /// Create a sprite

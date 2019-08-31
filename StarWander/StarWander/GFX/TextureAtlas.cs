@@ -42,7 +42,7 @@ namespace StarWander.GFX
                 var lastY = edgeBuffering;
                 for (var i = 0; i < regions.Length; i++)
                 {
-                    var found = FindSpot(regions, i, new Vector2<int>(atlasWidth, atlasHeight), edgeBuffering, lastY);
+                    var found = FindSpot(regions, i, new Vector2<int>(atlasWidth, atlasHeight), edgeBuffering * 2, lastY);
                     if (!found)
                     {
                         successful = false;
@@ -103,12 +103,12 @@ namespace StarWander.GFX
                         if (bufferWithImageData)
                         {
                             // Buffer left/right edges
+                            var leftImage = destPtr;
+                            var rightImage = destPtr + srcBits.Stride - 4;
                             for (var buff = 0; buff < edgeBuffering; buff++)
                             {
                                 var leftBuffer = destPtr + (buff - edgeBuffering) * 4;
-                                var leftImage = destPtr;
-                                var rightBuffer = destPtr + destBits.Stride + buff * 4;
-                                var rightImage = destPtr + destBits.Stride - 4;
+                                var rightBuffer = destPtr + srcBits.Stride + buff * 4;
                                 leftBuffer[0] = leftImage[0];
                                 leftBuffer[1] = leftImage[1];
                                 leftBuffer[2] = leftImage[2];
